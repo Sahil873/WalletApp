@@ -1,8 +1,9 @@
 import db from "@repo/db/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+import { NextAuthOptions } from "next-auth";
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -21,7 +22,8 @@ export const authOptions = {
         },
       },
       // TODO: User credentials type from next-aut
-      async authorize(credentials: any) {
+      async authorize(credentials) {
+        if (!credentials) return null;
         // Do zod validation, OTP validation here
         const hashedPassword = await bcrypt.hash(credentials.password, 10);
         const existingUser = await db.user.findFirst({
@@ -39,7 +41,7 @@ export const authOptions = {
             return {
               id: existingUser.id.toString(),
               name: existingUser.name,
-              email: existingUser.number,
+              number: existingUser.number,
             };
           }
           return null;
@@ -56,7 +58,7 @@ export const authOptions = {
           return {
             id: user.id.toString(),
             name: user.name,
-            email: user.number,
+            number: user.number,
           };
         } catch (e) {
           console.error(e);
@@ -66,12 +68,12 @@ export const authOptions = {
       },
     }),
   ],
-  secret: process.env.JWT_SECRET || "secret",
+  secret: process.env.JWT_SECRET || "",
   callbacks: {
     // TODO: can u fix the type here? Using any is bad
-    async session({ token, session }: any) {
+    async session({ token, session }) {
       if (session.user) {
-        session.user.id = token.sub;
+        session.user.id = Number(token.sub);
       }
       return session;
     },

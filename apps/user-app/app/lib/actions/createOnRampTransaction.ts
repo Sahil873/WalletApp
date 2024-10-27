@@ -9,7 +9,7 @@ export async function createOnRampTransaction(
   amount: number
 ) {
   const session = await getServerSession(authOptions);
-  const userId = session.user.id;
+  const userId = session?.user.id;
 
   if (!userId) {
     return { message: "User Not Logged in" };
