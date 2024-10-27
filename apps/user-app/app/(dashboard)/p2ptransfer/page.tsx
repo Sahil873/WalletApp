@@ -7,7 +7,6 @@ import P2PTransactions from "../../../components/P2PTransactions";
 async function getP2PTransactions() {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  console.log(userId);
 
   const txns = await prisma.p2PTransfer.findMany({
     where: {
