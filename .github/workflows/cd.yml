@@ -1,0 +1,30 @@
+name: Build and Deploy to Dockerhub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Login to Dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD}}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./docker/Dockerfile.user
+          push: true
+          tags: 08072003/paytm-next-app:latest
+
+      - name: Verify Pushed Image
+        run: docker pull 08072003/paytm-next-app:latest
