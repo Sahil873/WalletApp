@@ -1,0 +1,25 @@
+name: CI pipeline
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        uses: npm install
+
+      - name: Generate Prisma Client
+        uses: npm run db:genereate
+
+      - name: Build project
+        uses: npm run build
