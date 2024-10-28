@@ -1,0 +1,20 @@
+FROM node:20.12.0-alpine3.19
+
+WORKDIR /paytm
+
+# inefficient
+COPY package.json package-lock.json turbo.json tsconfig.json ./
+COPY apps ./apps
+COPY packages ./packages
+
+# Install Dependencies
+RUN npm install
+
+RUN npm run db:generate
+
+# Build only user-app
+WORKDIR /paytm/apps/user-app
+RUN npm run build
+
+# start the user-app
+CMD [ "npm", "run", "start" ]
