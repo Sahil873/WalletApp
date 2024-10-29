@@ -44,6 +44,6 @@ jobs:
               --name paytm-userapp \
               -p 3005:3000 \
               -e NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} \
-              -e DB_URL=${{ secrets.DB_URL }} \
+              -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
               -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
               08072003/paytm-next-app:latest
